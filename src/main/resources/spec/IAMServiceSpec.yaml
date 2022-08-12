@@ -1,0 +1,171 @@
+openapi: 3.0.2
+info:
+  title: IAM Service API
+  description: This is the IAM Service API
+  version: '0.1'
+servers:
+  - url: http://localhost:8080/iam-service
+
+tags:
+  - name: Accounts
+    description: Operations with accounts
+
+paths:
+  /accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Returns the list of existing accounts
+      operationId: getAccounts
+      responses:
+        200:
+          description: List of existing accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountResponse'
+    post:
+      tags:
+        - Accounts
+      summary: Creates a new account
+      operationId: createAccount
+      requestBody:
+        description: Account body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        201:
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+
+  /accounts/{accountId}:
+    get:
+      tags:
+        - Accounts
+      summary: Returns a specific account
+      operationId: getAccountById
+      parameters:
+        - name: accountId
+          in: path
+          description: Id of the account
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Account information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+
+    delete:
+      tags:
+        - Accounts
+      summary: Delete an existing account
+      operationId: deleteAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Id of the account
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Account deleted
+
+  /accounts/{accountId}/activate:
+    put:
+      tags:
+        - Accounts
+      summary: Activates a specific account
+      operationId: activateAccount
+      parameters:
+        - name: accountId
+          in: path
+          description: Id of the account
+          required: true
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: Activation token
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Account activated
+
+  /accounts/{accountId}/password:
+    patch:
+      tags:
+        - Accounts
+      summary: Set a new password
+      operationId: setNewPassword
+      parameters:
+        - name: accountId
+          in: path
+          description: Id of the account
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Password modification
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordRequest'
+      responses:
+        204:
+          description: Password changed
+
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    AccountResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AccountRequest'
+      properties:
+        id:
+          type: string
+
+    PasswordRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          format: password
+
+    PasswordChangeRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PasswordRequest'
+      properties:
+        newPassword:
+          type: string
+          format: password

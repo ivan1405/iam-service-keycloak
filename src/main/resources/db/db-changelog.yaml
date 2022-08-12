@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: createIAMTables
+      author: Iván Pérez
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            path: scripts/init_db.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

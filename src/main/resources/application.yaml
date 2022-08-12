@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: iam-service
+  mail:
+    host: 127.0.0.1
+    port: 25
+    username: username
+    password: password
+    properties:
+      debug: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chapter-backend
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: admin
+  jpa:
+    show-sql: true
+  liquibase:
+    change-log: classpath:db/db-changelog.yaml
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8081
+
+# This properties are used to configure the Keycloak client
+keycloak-admin:
+  auth-server-url: http://localhost:8080/
+  realm-admin: master
+  client-id-admin: admin-cli
+  username: admin
+  password: admin
+
+# This properties are used to protect the App with Keycloak
+keycloak:
+  realm: chapter_backend
+  resource: iam-service
+  auth-server-url: ${keycloak-admin.auth-server-url}
+  ssl-required: external
+  public-client: true
+  principal-attribute: preferred_username
